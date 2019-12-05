@@ -1,0 +1,158 @@
+{% extends 'layout.html' %}
+{% load my_tags %}
+{% block cus_cls %}active{% endblock %}
+
+{% block css %}
+    <style>
+        .not_required {
+            color: lightgray;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="col-md-12 main">
+
+        <h2 class="sub-header">客户列表</h2>
+        <div class="table-responsive">
+            <div class="form-group">
+                <a href="{% url 'crm:customer_add' %}" class="btn btn-primary ">添加客户</a>
+                <button class="btn btn-group" data-toggle="modal" data-target="#exampleModal">
+                    模态框添加客户
+                </button>
+            </div>
+
+            <form action="" class="form-inline pull-right">
+                <input type="text" class="form-control" name="search" placeholder="搜索...">
+                <button type="submit" class="btn btn-success">搜索</button>
+            </form>
+
+            <form class="form-inline" action="" method="post">
+                {% csrf_token %}
+                <select class="form-control" name="action" id="">
+
+                    {% if request.path_info == '/crm/customer_list/' %}
+                        <option value="mutli_apply" selected>公户转私户</option>
+                    {% elif request.path_info == '/crm/my_customer_list/' %}
+                        <option value="mutli_pub" selected>私户转公户</option>
+                    {% endif %}
+                    <option value="mutli_del">批量删除</option>
+                </select>
+                <button type="submit" class="btn btn-info">应用</button>
+
+                <table class="table table-striped  table-hover">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>序号</th>
+                        <th>QQ</th>
+                        <th>姓名</th>
+                        <th>性别</th>
+                        <th>手机号</th>
+                        <th>客户来源</th>
+                        <th>咨询课程</th>
+                        <th>状态</th>
+                        {#                    <th>最后跟进日期</th>#}
+                        <th>再次跟进时间</th>
+                        <th>跟随销售</th>
+                        <th>已报班级</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for customer in all_customers %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="choice_id" value="{{ customer.pk }}">
+                            </td>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ customer.qq }}</td>
+                            <td>{{ customer.name|default:'-' }}</td>
+                            <td>{{ customer.get_sex_display|default:'-' }}</td>
+                            <td>{{ customer.phone|default:'-' }}</td>
+                            <td>{{ customer.get_source_display|default:'-' }}</td>
+                            <td>{{ customer.get_course_display|default:'-' }}</td>
+                            <td>
+                                {{ customer.show_status|default:'-' }}
+                            </td>
+                            {#                            <td>{{ customer.last_consult_date|date:'Y-m-d'|default:'-' }}</td>#}
+                            <td>{{ customer.next_date|date:'Y-m-d'|default:'-' }}</td>
+                            <td>{{ customer.consultant|default:'-' }}</td>
+                            <td>
+                                {% for class in customer.class_list.all %}
+                                    {{ class.name|default:'-' }}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <a href="{% url_revers request 'crm:customer_edit' customer.pk %}"class="btn btn-warning">编辑</a>
+                                <a href="{% url_revers request 'crm:one_customer_record_list' customer.pk %}"class="btn btn-success">查看跟进</a>
+                                <a href="{% url_revers request 'crm:one_enrollment_list' customer.pk %}"class="btn btn-info">查看报名信息</a>
+                                <a href="{% url_revers request 'crm:enrollment_add' customer.pk %}"class="btn btn-danger">添加报名</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </form>
+
+        </div>
+    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {{ page_html }}
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block add_title %}
+    添加客户信息
+{% endblock %}
+{% block add_content %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ title }}</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" id="ajax-form-id" action="{% url 'crm:customer_add' %}" method="post"
+                  novalidate>
+                {% csrf_token %}
+                {% for cus_obj in customer_form_obj %}
+                    <div class="form-group  {% if cus_obj.errors.0 %}has-error{% endif %}">
+                        <label for="{{ cus_obj.id_for_label }}"
+                               class="col-sm-2 control-label {% if not cus_obj.field.required %} not_required {% endif %}">{{ cus_obj.label }}</label>
+                        <div class="col-sm-8">
+                            {{ cus_obj }}
+                        </div>
+                        <span class="help-block text-danger">{{ cus_obj.errors.0 }}</span>
+                    </div>
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $(function () {
+            $('#ajax-add').click(function () {
+                $.ajax({
+                    url: "{% url 'crm:customer_add_ajax' %}",
+                    type: 'post',
+                    headers: {"X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()},
+                    data: $('#ajax-form-id').serialize(),
+                    success: function (data) {
+                        if (data) {
+                            location.href = "{% url 'crm:customer_list' %}";
+                        } else {
+                            alert('出错了~~~');
+                        }
+                    }
+                })
+            });
+
+
+        })
+    </script>
+{% endblock %}

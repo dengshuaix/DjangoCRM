@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+{% load my_tags %}
+{% block enr_cls %}
+    active
+{% endblock %}
+{% block css %}
+    <style>
+        .not_required {
+            color: lightgray;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12 main">
+
+        <h2 class="sub-header">报名列表</h2>
+        <div class="table-responsive">
+{#            <a href="{%  %}" class="btn btn-primary ">添加报名记录</a>#}
+            <form action="" class="form-inline pull-right">
+                <input type="text" class="form-control" name="search" placeholder="搜索...">
+                <button type="submit" class="btn btn-success">搜索</button>
+            </form>
+
+            <form class="form-inline" action="" method="post">
+                {% csrf_token %}
+                <table class="table table-striped  table-hover">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>序号</th>
+                        <th>客户名称</th>
+                        <th>报名日期</th>
+                        <th>所报班级</th>
+                        <th>审批通过</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for enrollment in all_enrollment %}
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ enrollment.customer }}</td>
+                            <td>{{ enrollment.enrolled_date}}</td>
+                            <td>{{ enrollment.enrolment_class }}</td>
+                            <td>{{ enrollment.contract_approved }}</td>
+                            <td>
+                                <a href="{% url_revers request 'crm:enrollment_edit' enrollment.pk  %}" class="btn btn-warning">编辑</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </form>
+
+        </div>
+    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {{ page_html }}
+        </ul>
+    </nav>
+{% endblock %}

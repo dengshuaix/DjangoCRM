@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+
+
+{% block css %}
+
+    <style>
+        .icon-area ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .icon-area ul li {
+            float: left;
+            padding: 10px;
+            padding-left: 0;
+            width: 80px;
+        }
+
+        .icon-area ul li i {
+            font-size: 18px;
+            margin-left: 5px;
+            color: #6d6565;
+        }
+
+
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+    <div style="margin-top: 30px;width: 80%">
+        <form class="form-horizontal" action="" method="post">
+            {% csrf_token %}
+
+            {% for field in form_obj %}
+                <div class="form-group {% if field.errors %}has-error{% endif %} icon-area" >
+
+                    <label for="{{ field.id_for_label }}"
+                           class="col-sm-2 col-sm-offset-1 control-label">{{ field.label }}</label>
+                    <div class="col-sm-8">
+                        {{ field }}
+                        <span class="help-block"> {{ field.errors.0 }} </span>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <p class="text-center text-danger"> {{ form_obj.non_field_errors.0 }}</p>
+
+
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-10">
+                    <button type="submit" class="btn btn-default">保存</button>
+                </div>
+            </div>
+        </form>
+
+
+    </div>
+
+{% endblock %}

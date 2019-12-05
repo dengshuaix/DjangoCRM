@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>老男孩管理系统</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+    <style>
+        .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+{#  组件  #}
+{% include 'nav.html' %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li class="{% block cus_cls %}{% endblock %}"><a href="#">客户管理</a></li>
+            </ul>
+        </div>
+
+
+        {% block content %}
+
+        {% endblock %}
+
+
+    </div>
+</div>
+
+<script src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/sweetalert.min.js' %}"></script>
+{% block js %}
+    <script>
+        $('.btn-danger').click(function () {
+
+            swal({
+                title: "确认删除吗?",
+                text: "一旦删除,将不可恢复!",
+                icon: "warning",
+                buttons: ["取消", "确认!"],
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            {#url: '/publisher/'+$(this).attr('del_id')+'/',  //方式一  手动拼接路径  , 由于存在继承,不推荐使用#}
+                            url: $(this).attr('url'),  //方式二  给标签设置url属性, url是反向解析生成删除的url路径,并传递 删除的XXX_del 和 pk值
+                            success: (res) => {
+                                swal("数据删除成功!", {
+                                    icon: "success",
+                                });
+                                $(this).parent().parent().remove();
+                            }
+                        })
+
+
+                    } else {
+                        swal("数据删除失败!");
+                    }
+                });
+
+
+        })
+    </script>
+{% endblock %}
+
+
+</body>
+</html>

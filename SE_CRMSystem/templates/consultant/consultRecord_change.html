@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% block css %}
+    <style>
+        .not_required{
+            color: lightgray;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ title }}</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" action="" method="post" novalidate>
+                {% csrf_token %}
+                {% for conrec_obj in conrec_form_obj %}
+                    <div class="form-group  {% if conrec_obj.errors.0 %}has-error{% endif %}">
+                        <label for="{{ conrec_obj.id_for_label }}"
+                               class="col-sm-2 control-label {% if not conrec_obj.field.required %} not_required {% endif %}">{{ conrec_obj.label }}</label>
+                        <div class="col-sm-8">
+                            {{ conrec_obj }}
+                        </div>
+                        <span class="help-block text-danger">{{ conrec_obj.errors.0 }}</span>
+                    </div>
+                {% endfor %}
+
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-default">保存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

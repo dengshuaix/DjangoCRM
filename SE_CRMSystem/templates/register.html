@@ -1,0 +1,41 @@
+{% extends 'login_base.html' %}
+{% block title %}
+    注册
+{% endblock %}
+{% block content %}
+    <div class="register-container">
+        <h1>ShareLink</h1>
+        <div class="connect">
+            <p>Link the world. Share to world.</p>
+        </div>
+        <form action="" method="post" id="registerForm" novalidate>
+            {% csrf_token %}
+            <div>{{ reg_obj.username }}</div>
+            <span class="text-danger">{{ reg_obj.username.errors.0 }}</span>
+
+            <div>{{ reg_obj.password }}</div>
+            <span class="text-danger">{{ reg_obj.password.errors.0 }}</span>
+
+            <div>{{ reg_obj.re_password }}</div>
+            <span class="text-danger">{{ reg_obj.re_password.errors.0 }}</span>
+
+            <div>{{ reg_obj.name }}</div>
+            <span class="text-danger">{{ reg_obj.name.errors.0 }}</span>
+
+            <div>{{ reg_obj.mobile }}</div>
+            <span class="text-danger">{{ reg_obj.mobile.errors.0 }}</span>
+
+            <div>{{ reg_obj.department }}</div>
+            <span class="text-danger">{{ reg_obj.department.errors.0 }}</span>
+
+            {#            <div>#}
+            {#                <input type="password" name="password" class="password" placeholder="输入密码" oncontextmenu="return false"#}
+            {#                       onpaste="return false">#}
+            {#            </div>#}
+            <button id="submit" type="submit">注 册</button>
+        </form>
+        <a href="{% url 'crm:login' %}">
+            <button type="button" class="register-tis">已经有账号？</button>
+        </a>
+    </div>
+{% endblock %}
