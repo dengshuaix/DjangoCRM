@@ -17,7 +17,7 @@ cssselect==1.1.0
 cycler==0.10.0
 Cython==0.29.13
 decorator==4.4.0
-Django==1.11.23
+Django==1.11.28
 django-multiselectfield==0.1.8
 ExifRead==2.1.2
 facebook-wda==0.3.9
