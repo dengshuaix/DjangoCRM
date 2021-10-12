@@ -42,7 +42,7 @@ mss==4.0.3
 multidict==4.5.2
 numpy==1.16.4
 opencv-contrib-python==3.4.2.17
-opencv-python==4.1.0.25
+opencv-python==4.2.0.32
 paramiko==2.6.0
 parsel==1.5.2
 pbr==5.4.3
